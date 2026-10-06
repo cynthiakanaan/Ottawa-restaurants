@@ -1,89 +1,82 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Restaurants</title>
+<title>Our Eats</title>
 <style>
-:root{--bg:#f5f0e6;--card:#fff;--ink:#1a1a1a;--mute:#767060;--line:#e6dfcf;--hover:#faf7f0;--g:#2e7d32;--y:#d9a400;--r:#c62828;--o:#e8710a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#181816;--card:#232321;--ink:#f3efe6;--mute:#a39d8d;--line:#38362f;--hover:#2b2a27;--g:#66bb6a;--y:#f2c230;--r:#ef6a6a;--o:#f59a3e}}
-:root[data-theme="dark"]{--bg:#181816;--card:#232321;--ink:#f3efe6;--mute:#a39d8d;--line:#38362f;--hover:#2b2a27;--g:#66bb6a;--y:#f2c230;--r:#ef6a6a;--o:#f59a3e}
+:root{--bg:#f6f1e7;--card:#fffdf9;--ink:#161616;--mute:#76705f;--line:#e3dac9;--soft:#efe8da;--g:#2e7d32;--y:#c99a00;--r:#c62828;--o:#e07a1f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151413;--card:#1f1d1a;--ink:#f3efe6;--mute:#a39b8a;--line:#35312b;--soft:#2a2722;--g:#6cc070;--y:#e6b928;--r:#ef6f6f;--o:#f09a4d}}
+:root[data-theme="dark"]{--bg:#151413;--card:#1f1d1a;--ink:#f3efe6;--mute:#a39b8a;--line:#35312b;--soft:#2a2722;--g:#6cc070;--y:#e6b928;--r:#ef6f6f;--o:#f09a4d}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
-.wrap{max-width:1000px;margin:0 auto;padding:0 18px 60px}
-header{padding:30px 0 16px;display:flex;justify-content:space-between;align-items:center}
-h1{font-size:30px;line-height:1;margin:0;font-weight:700}
-.add{border:0;background:var(--ink);color:var(--bg);border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer}
-.search{width:100%;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:12px 14px}
-.tabs{display:flex;gap:22px;overflow-x:auto;margin-top:14px;border-bottom:1px solid var(--line)}
-.tab{border:0;background:none;padding:10px 0;color:var(--mute);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 50px}
+header{padding:26px 0 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+h1{font:700 30px/1 Georgia,serif;margin:0}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 16px;cursor:pointer}
+.btn.p{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
+.search{width:100%;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:11px 14px}
+.tabs{display:flex;gap:20px;overflow-x:auto;margin-top:10px;border-bottom:1px solid var(--line)}
+.tab{border:0;background:none;padding:9px 0;color:var(--mute);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab.on{color:var(--ink);font-weight:600;border-color:var(--ink)}
-.filters{display:flex;gap:8px;margin:14px 0 0;align-items:center}
-.filters select{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px 10px;min-width:0}
+.fb{display:flex;gap:16px;align-items:center;margin:12px 0 6px;color:var(--mute);font-size:14px}.fb .sp{flex:1}
 .lk{border:0;background:none;color:var(--ink);text-decoration:underline;cursor:pointer;padding:0;font-size:14px}
-#rnd{margin-left:auto}
-.legend{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 18px;margin:12px 0 8px;font-size:13px;color:var(--mute)}
-.lg{display:flex;flex-wrap:wrap;gap:4px 16px}.lg b{color:var(--ink)}.lg .o{color:var(--o)}
-.d{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}.d.Y{background:var(--g)}.d.M{background:var(--y)}.d.N{background:var(--r)}
+.filters{display:none;gap:8px;flex-wrap:wrap;margin-bottom:8px}.filters.on{display:flex}
+.filters select{flex:1 1 130px;min-width:0;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px}
+.lg{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--mute);font-size:13px;margin:4px 0 10px}
+.d{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.G{background:var(--g)}.Y{background:var(--y)}.R{background:var(--r)}.O{background:var(--o)}
 .tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
-table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
-th{text-align:left;font-weight:600;color:var(--mute);padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
-.hb{border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--mute);cursor:pointer}.hb.on{color:var(--ink)}
-td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-tbody tr{cursor:pointer}tbody tr:last-child td{border-bottom:0}tbody tr:hover td{background:var(--hover)}
-td:first-child,th:first-child{position:sticky;left:0;background:var(--card);min-width:190px}
-tbody tr:hover td:first-child{background:var(--hover)}
+table{border-collapse:collapse;width:100%;min-width:1020px}
+th{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--soft)}
+.hb{border:0;background:none;padding:0;font:inherit;font-weight:600;cursor:pointer}.hb.on{text-decoration:underline}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr{cursor:pointer}tbody tr:last-child td{border-bottom:0}tbody tr:hover td{background:var(--soft)}
+td:first-child,th:first-child{position:sticky;left:0;min-width:170px}td:first-child{background:var(--card)}
 tr.gY td:first-child{box-shadow:inset 4px 0 0 var(--g)}tr.gM td:first-child{box-shadow:inset 4px 0 0 var(--y)}tr.gN td:first-child{box-shadow:inset 4px 0 0 var(--r)}
-.nm{border:0;background:none;padding:0;color:var(--ink);font:600 16px/1.3 system-ui,sans-serif;text-align:left;cursor:pointer}
-.sm{color:var(--mute);font-size:13px;margin-top:2px}
-.pic{display:inline-block;width:34px;height:34px;border-radius:6px;background:var(--line) center/cover;vertical-align:middle;margin-right:8px}
-.wide{min-width:240px}.nt{color:var(--mute);font-size:13px}
-.sb{display:block;border:0;background:none;padding:0;cursor:pointer;text-align:left;white-space:nowrap}
-.tr{color:var(--mute);font-size:13px;margin-top:3px}.tr.Y{color:var(--ink);font-weight:600}
-.ms{white-space:nowrap}.mst{border:0;background:none;padding:0;font-size:17px;color:var(--line);cursor:pointer}.mst.on{color:var(--o)}
-td a{color:var(--ink);margin-right:12px;white-space:nowrap}
-.empty{text-align:center;color:var(--mute);padding:50px 14px}
-footer{text-align:center;margin-top:26px}
-dialog{border:0;border-radius:14px;background:var(--card);color:var(--ink);width:min(480px,94vw);max-height:90vh;padding:0}
+.nm{border:0;background:none;padding:0 0 0 4px;font-weight:700;font-size:15px;text-align:left;cursor:pointer}
+.pic{display:inline-block;width:30px;height:30px;border-radius:6px;background:var(--soft) center/cover;vertical-align:middle;margin-right:6px}
+.wide{min-width:260px}.nt{color:var(--mute);font-size:13px}
+.pill{border:1px solid var(--line);background:none;border-radius:99px;padding:1px 10px;font-size:12.5px;color:var(--mute);cursor:pointer;white-space:nowrap;margin:0 2px 3px 0}
+.pill.Y,.pill.T{color:var(--g);border-color:var(--g)}.pill.M{color:var(--y);border-color:var(--y)}.pill.N{color:var(--r);border-color:var(--r)}.pill.U{color:var(--o);border-color:var(--o)}
+.rt b{color:var(--o)}.rt span{color:var(--mute)}
+td a{color:var(--ink);margin-right:10px}
+.empty{text-align:center;color:var(--mute);padding:40px}
+.mp{width:100%;max-height:68vh}.pin circle{stroke:var(--card);stroke-width:2;cursor:pointer}.pin.gY circle{fill:var(--g)}.pin.gM circle{fill:var(--y)}.pin.gN circle{fill:var(--r)}.lb{fill:var(--mute);font-size:11px;text-anchor:middle}
+dialog{border:0;border-radius:12px;background:var(--card);color:var(--ink);width:min(480px,94vw);max-height:90vh;padding:0}
 dialog::backdrop{background:rgba(0,0,0,.5)}
-.sp{padding:22px}
-.hero{height:190px;margin:-22px -22px 16px;background:var(--line) center/cover}
-h2{margin:0;font-size:24px;line-height:1.2;font-weight:700}
-.sub{color:var(--mute);margin:4px 0 12px}
-.big{line-height:1;margin:6px 0 14px}
-.st{border:0;background:none;padding:0 2px 0 0;font-size:30px;color:var(--line);cursor:pointer}.st.on{color:var(--o)}
-.lbl{font-size:13px;color:var(--mute);margin:12px 0 5px}
+.sp2{padding:20px}.hero{height:180px;margin:-20px -20px 14px;background:var(--soft) center/cover}
+h2{margin:0;font:700 24px/1.2 Georgia,serif}.sub{color:var(--mute);margin:3px 0 10px}
+.lbl{font-size:13px;color:var(--mute);margin:14px 0 5px}
 .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.seg button{flex:1;border:0;background:none;padding:9px;cursor:pointer;color:var(--mute)}
-.seg button.on{background:var(--ink);color:var(--bg);font-weight:600}
+.seg button{flex:1;border:0;background:none;padding:8px;cursor:pointer;color:var(--mute)}.seg button.on{background:var(--ink);color:var(--bg)}
+.rr{display:flex;justify-content:space-between;padding:3px 0}.rs{color:var(--o);letter-spacing:2px}
+.st{border:0;background:none;padding:0 2px 0 0;font-size:30px;color:var(--line);cursor:pointer}.st.on{color:var(--o)}
 .txt{margin:12px 0 0}.mute{color:var(--mute)}
-.links{display:flex;gap:10px;margin-top:16px}
-.links a{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:9px;color:var(--ink);text-decoration:none}
-.foot{display:flex;justify-content:space-between;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
+.links{display:flex;gap:10px;margin-top:16px}.links a{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:9px;color:var(--ink);text-decoration:none}
+.foot{display:flex;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
 .foot button{border:0;background:none;color:var(--mute);cursor:pointer;padding:4px 0}
 dialog label{display:block;font-size:13px;color:var(--mute);margin-top:10px}
 dialog input[type=text],dialog textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:9px 11px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cb{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}.cb label{margin:0;color:var(--ink);display:flex;gap:5px;align-items:center;font-size:14px}
+.cb{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px}.cb label{margin:0;color:var(--ink);display:flex;gap:5px;align-items:center}
 .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.btn{border:1px solid var(--line);background:none;border-radius:8px;padding:8px 16px;cursor:pointer}.btn.p{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style></head><body>
 <div class="wrap">
-<header><h1>Restaurants</h1><button class="add" id="add">+ Add place</button></header>
-<input class="search" id="q" type="search" placeholder="Search by name, cuisine or area" aria-label="Search">
+<header><h1>Our Eats</h1><button class="btn p" id="add">+ Add place</button></header>
+<input class="search" id="q" type="search" placeholder="Search name, cuisine, area, notes…" aria-label="Search">
 <nav class="tabs" id="tabs"></nav>
-<div class="filters">
-<select id="ft" aria-label="Tried"><option value="">Tried: any</option><option value="Y">Tried</option><option value="N">Not tried yet</option></select>
-<select id="fg" aria-label="Would go"><option value="">Would go: any</option><option value="Y">Yes</option><option value="M">Maybe</option><option value="N">Not keen</option></select>
-<button class="lk" id="rnd">Pick one for me</button></div>
-<div class="legend"><span id="cnt"></span><span class="lg"><span><i class="d Y"></i>Would go</span><span><i class="d M"></i>Maybe</span><span><i class="d N"></i>Not keen</span><span><b>✓</b> Tried</span><span><b class="o">★</b> Your rating</span></span></div>
-<div class="tw"><table><thead><tr id="th"></tr></thead><tbody id="list"></tbody></table></div>
-<footer><button class="lk" id="bk" style="color:var(--mute)">Backup &amp; restore</button></footer>
+<div class="fb"><span id="cnt"></span><span class="sp"></span><button class="lk" id="vt">Map view</button><button class="lk" id="ftg">Filters</button><button class="lk" id="clr">Clear</button><button class="lk" id="rnd">Surprise me</button></div>
+<div class="filters on" id="fl">
+<select id="fcu" aria-label="Cuisine"></select><select id="far" aria-label="Area"></select>
+<select id="fpr" aria-label="Price"><option value="">Any price</option><option value="1">$ (under ~$25)</option><option value="2">$$ (~$25–50)</option><option value="3">$$$ ($50+)</option></select>
+<select id="ft" aria-label="Tried"><option value="">Tried or not</option><option value="Y">Tried</option><option value="N">Not tried yet</option></select>
+<select id="fg" aria-label="Would go"><option value="">Would go: any</option><option value="Y">Yes</option><option value="M">Maybe</option><option value="N">Not keen</option></select><select id="frf" aria-label="Distance from"></select><select id="fdm" aria-label="Within"><option value="">Any distance</option><option value="1">Within 1 km</option><option value="2">Within 2 km</option><option value="5">Within 5 km</option><option value="10">Within 10 km</option></select></div>
+<div class="lg"><span><i class="d G"></i>Would go</span><span><i class="d Y"></i>Maybe</span><span><i class="d R"></i>Not keen / avoid</span><span><i class="d O"></i>Not tried yet</span><span>★ average of everyone's ratings</span><span>Map pins use the same colours</span><span>Click a row for details and to rate</span></div>
+<div class="tw" id="tw"><table><thead><tr id="th"></tr></thead><tbody id="list"></tbody></table></div>
+<div class="tw" id="mw" style="display:none;padding:12px"></div>
 </div>
-
 <dialog id="sh"></dialog>
-
-<dialog id="ed"><div class="sp"><h2 id="eh">Add place</h2>
+<dialog id="ed"><div class="sp2"><h2 id="eh">Add place</h2>
 <label>Name<input type="text" id="fn"></label>
 <div class="g2"><label>Cuisine<input type="text" id="fy"></label><label>Area<input type="text" id="fa"></label></div>
 <div class="g2"><label>Price<input type="text" id="fp" placeholder="$$ or $20-40"></label><label>Website<input type="text" id="fw" placeholder="optional"></label></div>
@@ -91,12 +84,6 @@ dialog input[type=text],dialog textarea{width:100%;border:1px solid var(--line);
 <label>Known for<input type="text" id="fk"></label>
 <label>Notes<textarea id="fno" rows="3"></textarea></label>
 <div class="btns"><button class="btn" id="ec">Cancel</button><button class="btn p" id="es">Save</button></div></div></dialog>
-
-<dialog id="bd"><div class="sp"><h2>Backup &amp; restore</h2>
-<p class="mute">Your list lives in this browser only. Copy this text somewhere safe, or paste a backup here to restore it.</p>
-<textarea id="bt" rows="7" style="width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px"></textarea>
-<div class="btns"><button class="btn" id="br">Reset to original</button><button class="btn" id="bl">Restore pasted</button><button class="btn p" id="bc">Close</button></div></div></dialog>
-
 <script>
 const CATS={d:"Date night",c:"Chill",t:"Takeout",b:"Bars",k:"Brunch",f:"Cafés",x:"Avoid"};
 // name, lists, type, area, price, tried, go, known for, notes
@@ -187,86 +174,121 @@ const D=[
 ["Mati","x","Seafood","","","Y","N","","Only went once so I'm open"],
 ["Greek on Wheels","x","","","","Y","N"],
 ["Shawarma Palace","x","","","","Y","N"]];
-const K="our-eats-v1",$=s=>document.querySelector(s);
+const K="our-eats-v1",KR="our-eats-rt",KI="our-eats-img",$=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const orig=()=>D.map((r,i)=>({id:i+1,name:r[0],cats:r[1],type:r[2],loc:r[3],price:r[4],tried:r[5],go:r[6],known:r[7]||"",notes:r[8]||"",rating:0,web:"",img:""}));
-let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
-if(!Array.isArray(S))S=orig();
-S.forEach(p=>{p.web=p.web||"";p.img=p.img||""});
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S));return true}catch(e){alert("Storage is full. Remove a few photos or restore a smaller backup.");return false}};
+const GOL={Y:"Would go",M:"Maybe",N:"Not keen"};
+const orig=()=>D.map((r,i)=>({id:i+1,name:r[0],cats:r[1],type:r[2],loc:r[3],price:r[4],tried:r[5],go:r[6],known:r[7]||"",notes:r[8]||"",web:""}));
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+let S=ld(K,null);if(!Array.isArray(S))S=orig();
+let imgs=ld(KI,{}),L=ld(KR,{}),ME="me",RT={me:L},NAMES={me:"You"},DB=null,pt=0,warned=0;
+S.forEach(p=>{p.web=p.web||"";if(p.img){imgs[p.id]=p.img;delete p.img}if(p.rating){L[p.id]=p.rating}delete p.rating});
+const CUIS=["Italian","Canadian","French","Contemporary","Japanese","Sushi","Ramen","Korean","Indian","Seafood","Pizza","BBQ","Steak","Mexican","Lebanese","Vietnamese","Greek","Café","Bar"];
+const AREAS=[["Centretown",/Centretown|Elgin|Bank|Somerset|Chinatown/],["Byward",/Byward|Rideau|Major Hill/],["Glebe",/Glebe/],["Westboro",/Westboro|Richmond/],["Hintonburg",/Hintonburg|Armstrong/],["Little Italy",/Little Italy|Preston/],["Wellington",/Wellington/],["Downtown",/Downtown|Metcalfe/],["Old Ottawa",/Old Ottawa/],["New Edinburgh",/New Edinburgh/],["Gatineau",/Gatineau|Aylmer|Hull/],["Chelsea",/Chelsea/]];
+const area=p=>(AREAS.find(a=>a[1].test(p.loc))||["Other"])[0];
+const tier=p=>{const d=(p.price.match(/\$/g)||[]).length,n=(p.price.match(/\d+/g)||[]).map(Number);if(d>=2)return Math.min(d,3);if(n.length){const a=n.reduce((x,y)=>x+y)/n.length;return a<25?1:a<50?2:3}return d};
+const AC={Centretown:[45.4175,-75.693],Byward:[45.4285,-75.6935],Glebe:[45.401,-75.686],Westboro:[45.395,-75.755],Hintonburg:[45.4025,-75.73],"Little Italy":[45.4045,-75.708],Wellington:[45.4,-75.74],Downtown:[45.422,-75.6985],"Old Ottawa":[45.392,-75.68],"New Edinburgh":[45.44,-75.693],Gatineau:[45.429,-75.72],Chelsea:[45.51,-75.78]};
+const hav=(a,b)=>{const t=x=>x*Math.PI/180,h=Math.sin(t(b[0]-a[0])/2)**2+Math.cos(t(a[0]))*Math.cos(t(b[0]))*Math.sin(t(b[1]-a[1])/2)**2;return 12742*Math.asin(Math.sqrt(h))};
+const refPt=()=>st.rf=="me"?geo:AC[st.rf]||null;
+const dist=p=>{const r=refPt(),c=AC[area(p)];return r&&c?hav(r,c):null};
+const dd=p=>{const d=dist(p);return d==null?1e9:d};
+const distTxt=p=>{const d=dist(p);return d==null?"":`<div class="nt">~${d<1?"<1":d.toFixed(1)} km</div>`};
+function mapSvg(r){
+ const g={};r.forEach(p=>{const a=area(p);if(AC[a]&&a!="Chelsea")(g[a]=g[a]||[]).push(p)});
+ const out=r.length-Object.values(g).reduce((n,l)=>n+l.length,0);let o="";
+ for(const a in g){const [la,ln]=AC[a],x=30+(ln+75.77)*4900,y=30+(45.445-la)*7000,l=g[a];
+  o+=l.map((p,k)=>`<g class="pin g${p.go}" data-id="${p.id}"><circle cx="${(x+9*Math.sqrt(k)*Math.cos(k*2.4)).toFixed(1)}" cy="${(y+9*Math.sqrt(k)*Math.sin(k*2.4)).toFixed(1)}" r="7"></circle><title>${esc(p.name)}</title></g>`).join("")+`<text class="lb" x="${x.toFixed(1)}" y="${(y-9*Math.sqrt(l.length)-6).toFixed(1)}">${a} (${l.length})</text>`}
+ return `<svg class="mp" viewBox="0 0 560 480" role="img" aria-label="Map of places by neighbourhood">${o||'<text class="lb" x="280" y="240">Nothing matches your filters</text>'}</svg><div class="nt">Pins sit at neighbourhood level, not exact addresses. Click a pin for details and the exact Maps link.${out?` ${out} place${out>1?"s":""} outside this view (e.g. Chelsea, or no area) not shown.`:""}</div>`}
 const TABS=[["all","All"],["d","Date night"],["c","Chill"],["t","Takeout"],["b","Bars"],["kf","Brunch & cafés"],["x","Avoid"]];
-const st={tab:"all",q:"",t:"",g:"",s:"n"};let cur=null,editId=null,shown=[];
+let geo=null;const st={tab:"all",q:"",cu:"",ar:"",pr:"",t:"",g:"",s:"n",rf:"",dm:"",v:"t"};let cur=null,editId=null,shown=[];
 const inTab=(p,k)=>k=="all"?!p.cats.includes("x"):[...k].some(c=>p.cats.includes(c));
 const city=p=>/Gatineau|Aylmer|Hull/.test(p.loc)?"Gatineau QC":/Chelsea/.test(p.loc)?"Chelsea QC":"Ottawa ON";
 const mapUrl=p=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.name+" "+city(p));
 const webUrl=p=>p.web?(/^https?:/.test(p.web)?p.web:"https://"+p.web):"https://www.google.com/search?q="+encodeURIComponent(p.name+" "+city(p)+" restaurant");
-const meta=p=>[p.type,p.loc,p.price].filter(Boolean).map(esc).join(" · ");
+const photoUrl=p=>"https://www.google.com/search?tbm=isch&q="+encodeURIComponent(p.name+" "+city(p)+" restaurant food");
+const rts=id=>Object.values(RT).map(m=>m[id]).filter(Boolean);
+const avg=id=>{const r=rts(id);return r.length?r.reduce((a,b)=>a+b)/r.length:0};
+const fail=()=>{if(!warned++)alert("This change is only saved on this device. To save it for everyone, ask for Contributor access to this page.")};
+function persist(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}if(DB){clearTimeout(pt);pt=setTimeout(()=>{pt=0;DB.doc("app/places").set({list:S}).catch(fail)},400)}}
+function rate(id,v){const m=RT[ME]=RT[ME]||{};if(m[id]==v)delete m[id];else m[id]=v;try{localStorage.setItem(KR,JSON.stringify(m))}catch(e){}if(DB)DB.collection("ratings").doc(ME).set({r:m}).catch(fail)}
+const saveImg=()=>{try{localStorage.setItem(KI,JSON.stringify(imgs));return true}catch(e){alert("Storage is full. Remove a few photos.");return false}};
 
-const GOL={Y:"Would go",M:"Maybe",N:"Not keen"};
-function item(p){
- const x=p.cats.includes("x"),g=p.go;
- const stars=[1,2,3,4,5].map(v=>`<button class="mst${p.rating>=v?" on":""}" data-a="rate" data-v="${v}" aria-label="Rate ${v}">★</button>`).join("");
- return `<tr class="g${g}" data-id="${p.id}"><td>${p.img?`<span class="pic" style="background-image:url(${p.img})"></span>`:""}<button class="nm" data-a="open">${esc(p.name)}</button><div class="sm">${meta(p)}</div></td>
+function row(p){
+ const x=p.cats.includes("x"),n=rts(p.id).length;
+ return `<tr class="g${p.go}" data-id="${p.id}"><td>${imgs[p.id]?`<span class="pic" style="background-image:url(${imgs[p.id]})"></span>`:""}<button class="nm" data-a="o">${esc(p.name)}</button></td><td>${esc(p.type)}</td><td>${esc(area(p))}${distTxt(p)}</td><td>${esc(p.price)}</td>
 <td class="wide">${esc(p.known)}${p.notes?`<div class="nt">${esc(p.notes)}</div>`:""}</td>
-<td><button class="sb" data-a="go"><i class="d ${g}"></i>${x?"Avoid":GOL[g]}</button><button class="sb tr ${p.tried}" data-a="tried">${p.tried=="Y"?"✓ Tried":"Not tried yet"}</button></td>
-<td class="ms">${stars}</td>
-<td><a href="${mapUrl(p)}" target="_blank" rel="noopener">Map</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${p.web?"Website":"Find site"}</a></td></tr>`}
+<td><button class="pill ${x?"N":p.go}" data-a="go">${x?"Avoid":GOL[p.go]}</button><button class="pill ${p.tried=="Y"?"T":"U"}" data-a="t">${p.tried=="Y"?"✓ Tried":"Not yet"}</button></td>
+<td class="rt">${n?`<b>★ ${avg(p.id).toFixed(1)}</b> <span>(${n})</span>`:"–"}</td>
+<td><a href="${mapUrl(p)}" target="_blank" rel="noopener">Map</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${p.web?"Site":"Find site"}</a></td></tr>`}
 
+function opts(id,label,list,val){const e=$(id);e.innerHTML=`<option value="">${label}</option>`+list.map(([v,c])=>`<option value="${esc(v)}">${esc(v)} (${c})</option>`).join("");e.value=val}
 function render(){
- const q=st.q.toLowerCase();
- const base=S.filter(p=>(!st.t||p.tried==st.t)&&(!st.g||p.go==st.g)&&(!q||[p.name,p.type,p.loc,p.price,p.known,p.notes].join(" ").toLowerCase().includes(q)));
- $("#th").innerHTML=[["n","Place"],["","Notes"],["g","Status"],["r","Rating"],["","Links"]].map(([k,l])=>`<th>${k?`<button class="hb${st.s==k?" on":""}" data-s="${k}">${l}${st.s==k?" ▾":""}</button>`:l}</th>`).join("");
+ const q=st.q.toLowerCase(),has=(p,c)=>p.type.toLowerCase().includes(c.toLowerCase());
+ const base=S.filter(p=>(!q||[p.name,p.type,p.loc,p.price,p.known,p.notes].join(" ").toLowerCase().includes(q))&&(q||inTab(p,st.tab))&&(!q||st.tab=="all"||inTab(p,st.tab)));
+ opts("#fcu","All cuisines",CUIS.map(c=>[c,base.filter(p=>has(p,c)).length]).filter(a=>a[1]),st.cu);
+ opts("#far","All areas",[...new Set(base.map(area))].sort().map(a=>[a,base.filter(p=>area(p)==a).length]),st.ar);
+ $("#th").innerHTML=[["n","Place"],["y","Cuisine"],["a","Area"],["","Price"],["","Known for & notes"],["g","Status"],["r","Rating"],["","Links"]].map(([k,l])=>`<th>${k?`<button class="hb${st.s==k?" on":""}" data-s="${k}">${l}${st.s==k?" ▾":""}</button>`:l}</th>`).join("");
  $("#tabs").innerHTML=TABS.map(([k,l])=>`<button class="tab${st.tab==k?" on":""}" data-tab="${k}">${l}</button>`).join("");
  const o={Y:0,M:1,N:2},n=(a,b)=>a.name.localeCompare(b.name);
- const r=base.filter(p=>q?true:inTab(p,st.tab)).filter(p=>!q||inTab(p,st.tab)||st.tab=="all").sort((a,b)=>st.s=="r"?(b.rating-a.rating)||n(a,b):st.s=="g"?(o[a.go]-o[b.go])||n(a,b):st.s=="y"?a.type.localeCompare(b.type)||n(a,b):st.s=="a"?a.loc.localeCompare(b.loc)||n(a,b):n(a,b));
- $("#list").innerHTML=r.length?r.map(item).join(""):`<tr><td colspan="5" class="empty">Nothing here. Try another tab or filter, or add a place.</td></tr>`;
+ const r=base.filter(p=>(!st.cu||has(p,st.cu))&&(!st.ar||area(p)==st.ar)&&(!st.pr||tier(p)==st.pr)&&(!st.t||p.tried==st.t)&&(!st.g||p.go==st.g)&&(!st.dm||!refPt()||(dist(p)!=null&&dist(p)<=+st.dm)))
+  .sort((a,b)=>st.s=="d"?(dd(a)-dd(b))||n(a,b):st.s=="r"?(avg(b.id)-avg(a.id))||n(a,b):st.s=="g"?(o[a.go]-o[b.go])||n(a,b):st.s=="y"?a.type.localeCompare(b.type)||n(a,b):st.s=="a"?area(a).localeCompare(area(b))||n(a,b):n(a,b));
+ $("#list").innerHTML=r.length?r.map(row).join(""):`<tr><td colspan="8" class="empty">Nothing matches. Clear a filter or add a place.</td></tr>`;
+ $("#tw").style.display=st.v=="t"?"":"none";$("#mw").style.display=st.v=="m"?"":"none";$("#vt").textContent=st.v=="t"?"Map view":"Table view";if(st.v=="m")$("#mw").innerHTML=mapSvg(r);
  shown=r;$("#cnt").textContent=r.length+" place"+(r.length==1?"":"s");
 }
 function sheet(){
  const p=S.find(x=>x.id==cur);if(!p)return;
- const stars=[1,2,3,4,5].map(v=>`<button class="st${p.rating>=v?" on":""}" data-a="rate" data-v="${v}" aria-label="Rate ${v}">★</button>`).join("");
- const seg=(a,cur,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${cur==v?"on":""}" data-a="${a}" data-v="${v}">${l}</button>`).join("")}</div>`;
- $("#sh").innerHTML=`<div class="sp">${p.img?`<div class="hero" style="background-image:url(${p.img})"></div>`:""}
-<h2>${esc(p.name)}</h2><div class="sub">${meta(p)||"&nbsp;"}</div>
-<div class="big">${stars}</div>
+ const mine=(RT[ME]||{})[p.id]||0,im=imgs[p.id];
+ const stars=[1,2,3,4,5].map(v=>`<button class="st${mine>=v?" on":""}" data-a="rate" data-v="${v}" aria-label="Rate ${v}">★</button>`).join("");
+ const others=Object.keys(RT).filter(u=>u!=ME&&RT[u][p.id]).map(u=>`<div class="rr"><span>${esc(NAMES[u]||"Someone")}</span><span class="rs">${"★".repeat(RT[u][p.id])}${"☆".repeat(5-RT[u][p.id])}</span></div>`).join("");
+ const seg=(a,c,o)=>`<div class="seg">${o.map(([v,l])=>`<button class="${c==v?"on":""}" data-a="${a}" data-v="${v}">${l}</button>`).join("")}</div>`;
+ $("#sh").innerHTML=`<div class="sp2">${im?`<div class="hero" style="background-image:url(${im})"></div>`:""}
+<h2>${esc(p.name)}</h2><div class="sub">${[p.type,p.loc,p.price].filter(Boolean).map(esc).join(" · ")||"&nbsp;"}</div>
+<div class="lbl">Your rating</div><div>${stars}</div>${others?`<div class="lbl">Others</div>${others}`:""}
 <div class="lbl">Tried it?</div>${seg("tried",p.tried,[["N","Not yet"],["Y","Tried"]])}
-<div class="lbl">Would go?</div>${seg("go",p.go,[["Y","Yes"],["M","Maybe"],["N","No"]])}
+<div class="lbl">Would go?</div>${seg("go",p.go,[["Y","Yes"],["M","Maybe"],["N","Not keen"]])}
 ${p.known?`<p class="txt">${esc(p.known)}</p>`:""}${p.notes?`<p class="txt mute">${esc(p.notes)}</p>`:""}
-<div class="links"><a href="${mapUrl(p)}" target="_blank" rel="noopener">Open in Maps</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${p.web?"Website":"Find website"}</a></div>
-<div class="foot"><span><label class="lk" style="display:inline;margin:0;font-size:14px">${p.img?"Change photo":"Add photo"}<input type="file" accept="image/*" hidden id="ph"></label>${p.img?` &nbsp;<button class="lk" data-a="rmph">Remove</button>`:""}</span>
+<div class="links"><a href="${mapUrl(p)}" target="_blank" rel="noopener">Open in Maps</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${p.web?"Website":"Find website"}</a><a href="${photoUrl(p)}" target="_blank" rel="noopener">Find photos</a></div>
+${im?"":`<div class="nt" style="margin-top:10px">Tip: open Find photos or Maps, copy an image, then paste it here (Ctrl/Cmd+V) or drop an image file onto this card.</div>`}<div class="foot"><span><label class="lk" style="display:inline;margin:0">${im?"Change photo":"Add photo"}<input type="file" accept="image/*" hidden id="ph"></label>${im?` &nbsp;<button data-a="rmph">Remove</button>`:""}</span>
 <span><button data-a="edit">Edit</button> &nbsp; <button data-a="del">Delete</button> &nbsp; <button data-a="close" style="color:var(--ink);font-weight:600">Done</button></span></div></div>`;
 }
-function openSheet(id){cur=id;sheet();$("#sh").showModal()}
-function resize(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",.72))};im.src=r.result};r.readAsDataURL(file)}
+const openSheet=id=>{cur=id;sheet();$("#sh").showModal()};
+function resize(f,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",.6))};im.src=r.result};r.readAsDataURL(f)}
 
 $("#list").onclick=e=>{
  const c=e.target.closest("tr");if(!c||e.target.closest("a"))return;
  const id=+c.dataset.id,b=e.target.closest("[data-a]"),a=b&&b.dataset.a,p=S.find(x=>x.id==id);
- if(a=="rate")p.rating=p.rating==+b.dataset.v?0:+b.dataset.v;
- else if(a=="tried")p.tried=p.tried=="Y"?"N":"Y";
- else if(a=="go")p.go={Y:"M",M:"N",N:"Y"}[p.go];
- else return openSheet(id);
- save();render();
+ if(a=="t")p.tried=p.tried=="Y"?"N":"Y";else if(a=="go")p.go={Y:"M",M:"N",N:"Y"}[p.go];else return openSheet(id);
+ persist();render();
 };
+$("#th").onclick=e=>{const b=e.target.closest("[data-s]");if(b){st.s=b.dataset.s;render()}};
 $("#tabs").onclick=e=>{const b=e.target.closest("[data-tab]");if(b){st.tab=b.dataset.tab;render()}};
 $("#q").oninput=e=>{st.q=e.target.value;render()};
-$("#ft").onchange=e=>{st.t=e.target.value;render()};
-$("#fg").onchange=e=>{st.g=e.target.value;render()};
-$("#th").onclick=e=>{const b=e.target.closest("[data-s]");if(b){st.s=b.dataset.s;render()}};
+[["#fcu","cu"],["#far","ar"],["#fpr","pr"],["#ft","t"],["#fg","g"]].forEach(([i,k])=>$(i).onchange=e=>{st[k]=e.target.value;render()});
+$("#ftg").onclick=()=>$("#fl").classList.toggle("on");
+$("#clr").onclick=()=>{Object.assign(st,{q:"",cu:"",ar:"",pr:"",t:"",g:"",rf:"",dm:"",s:"n"});$("#q").value="";["#fpr","#ft","#fg","#frf","#fdm"].forEach(i=>$(i).value="");render()};
+$("#vt").onclick=()=>{st.v=st.v=="t"?"m":"t";render()};
+$("#mw").onclick=e=>{const g=e.target.closest("[data-id]");if(g)openSheet(+g.dataset.id)};
+$("#frf").innerHTML='<option value="">Distance from…</option>'+Object.keys(AC).map(a=>`<option>${a}</option>`).join("")+'<option value="me">My location</option>';
+$("#frf").onchange=e=>{const v=e.target.value;if(v=="me"){if(!navigator.geolocation){alert("Location isn't available here. Pick a neighbourhood instead.");e.target.value=st.rf;return}navigator.geolocation.getCurrentPosition(q=>{geo=[q.coords.latitude,q.coords.longitude];st.rf="me";st.s="d";render()},()=>{alert("Couldn't get your location. Pick a neighbourhood instead.");e.target.value=st.rf})}else{st.rf=v;st.s=v?"d":"n";if(!v)st.dm="";$("#fdm").value=st.dm;render()}};
+$("#fdm").onchange=e=>{if(e.target.value&&!st.rf){alert("Choose \"Distance from…\" first.");e.target.value="";return}st.dm=e.target.value;render()};
 $("#rnd").onclick=()=>{const c=shown.filter(p=>p.tried=="N"&&p.go=="Y"),a=c.length?c:shown;if(a.length)openSheet(a[Math.floor(Math.random()*a.length)].id)};
 $("#sh").onclick=e=>{
+ if(e.target==$("#sh"))return $("#sh").close();
  const b=e.target.closest("[data-a]");if(!b)return;
  const p=S.find(x=>x.id==cur),a=b.dataset.a,v=b.dataset.v;
  if(a=="close")return $("#sh").close();
  if(a=="edit"){$("#sh").close();return openEd(cur)}
- if(a=="del"){if(!confirm(`Delete "${p.name}"?`))return;S=S.filter(x=>x.id!=cur);save();$("#sh").close();return render()}
- if(a=="rate")p.rating=p.rating==+v?0:+v;
- if(a=="tried")p.tried=v;if(a=="go")p.go=v;if(a=="rmph")p.img="";
- save();sheet();render();
+ if(a=="del"){if(!confirm(`Delete "${p.name}"?`))return;S=S.filter(x=>x.id!=cur);delete imgs[cur];if(DB)DB.doc("photos/"+cur).delete().catch(()=>{});else saveImg();persist();$("#sh").close();return render()}
+ if(a=="rate")rate(cur,+v);
+ if(a=="tried"){p.tried=v;persist()}if(a=="go"){p.go=v;persist()}
+ if(a=="rmph"){delete imgs[cur];if(DB)DB.doc("photos/"+cur).delete().catch(fail);else saveImg()}
+ sheet();render();
 };
-$("#sh").onchange=e=>{if(e.target.id!="ph"||!e.target.files[0])return;resize(e.target.files[0],d=>{const p=S.find(x=>x.id==cur),old=p.img;p.img=d;if(!save())p.img=old;sheet();render()})};
-$("#sh").addEventListener("click",e=>{if(e.target==$("#sh"))$("#sh").close()});
-
+$("#sh").onchange=e=>{if(e.target.id!="ph"||!e.target.files[0])return;resize(e.target.files[0],d=>{const id=cur;imgs[id]=d;if(DB)DB.doc("photos/"+id).set({d}).catch(fail);else saveImg();sheet();render()})};
+const addImg=f=>{if(f&&cur!=null&&/^image\//.test(f.type))resize(f,d=>{const id=cur;imgs[id]=d;if(DB)DB.doc("photos/"+id).set({d}).catch(fail);else saveImg();sheet();render()})};
+$("#sh").addEventListener("paste",e=>{const i=[...((e.clipboardData&&e.clipboardData.items)||[])].find(x=>x.type.startsWith("image/"));if(i){e.preventDefault();addImg(i.getAsFile())}});
+$("#sh").addEventListener("dragover",e=>e.preventDefault());
+$("#sh").addEventListener("drop",e=>{e.preventDefault();addImg(e.dataTransfer.files[0])});
 function openEd(id){
  editId=id;const p=id?S.find(x=>x.id==id):{name:"",cats:/^[a-z]$/.test(st.tab)?st.tab:"d",type:"",loc:"",price:"",web:"",known:"",notes:""};
  $("#eh").textContent=id?"Edit place":"Add place";
@@ -281,12 +303,23 @@ $("#es").onclick=()=>{
  const cats=[...document.querySelectorAll("#fc input:checked")].map(i=>i.value).join("")||"d";
  const v={name,cats,type:$("#fy").value.trim(),loc:$("#fa").value.trim(),price:$("#fp").value.trim(),web:$("#fw").value.trim(),known:$("#fk").value.trim(),notes:$("#fno").value.trim()};
  let id=editId;
- if(id)Object.assign(S.find(x=>x.id==id),v);else{id=Math.max(0,...S.map(x=>x.id))+1;S.push({id,tried:"N",go:"Y",rating:0,img:"",...v})}
- save();$("#ed").close();render();openSheet(id);
+ if(id)Object.assign(S.find(x=>x.id==id),v);else{id=Math.max(0,...S.map(x=>x.id))+1;S.push({id,tried:"N",go:"Y",...v})}
+ persist();$("#ed").close();render();openSheet(id);
 };
-$("#bk").onclick=()=>{$("#bt").value=JSON.stringify(S);$("#bd").showModal()};
-$("#bc").onclick=()=>$("#bd").close();
-$("#bl").onclick=()=>{try{const d=JSON.parse($("#bt").value);if(!Array.isArray(d)||!d.every(x=>x&&x.name&&typeof x.cats=="string"))throw 0;S=d;S.forEach(p=>{p.web=p.web||"";p.img=p.img||""});save();render();$("#bd").close()}catch(e){alert("That doesn't look like a backup. Copy the full text from this box and try again.")}};
-$("#br").onclick=()=>{if(confirm("Replace your list with the original? Your edits, ratings and photos will be lost.")){S=orig();save();render();$("#bd").close()}};
 render();
+// Shared mode: places + per-person ratings sync when the page runs with db + user access
+(async()=>{try{
+ const c=window.claude;if(!c)return;
+ const [d,u]=await Promise.all([c.use("db"),c.use("user")]);if(!d||!u)return;
+ const id=await u.id();if(!id)return;
+ ME=id;DB=d;NAMES[ME]="You";
+ d.doc("app/places").onSnapshot(s=>{if(s.exists){if(!pt)S=(s.data().list||S)}else d.doc("app/places").set({list:S}).catch(()=>{});render();if($("#sh").open)sheet()},()=>{});
+ d.collection("ratings").onSnapshot(async s=>{
+  const R={};s.docs.forEach(x=>R[x.id]=(x.data()||{}).r||{});
+  if(!R[ME]&&Object.keys(L).length){R[ME]=L;d.collection("ratings").doc(ME).set({r:L}).catch(()=>{})}
+  RT=R;render();if($("#sh").open)sheet();
+  try{const ps=await u.profiles(Object.keys(R));for(const k in ps)NAMES[k]=ps[k].isMe?"You":(ps[k].name||"Someone");render();if($("#sh").open)sheet()}catch(e){}
+ },()=>{});
+d.collection("photos").onSnapshot(s=>{const m={};s.docs.forEach(x=>{const v=(x.data()||{}).d;if(v)m[x.id]=v});imgs=m;render();if($("#sh").open)sheet()},()=>{});
+}catch(e){}})();
 </script></body></html>
