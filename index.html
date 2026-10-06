@@ -183,7 +183,7 @@ const D=[
 ["Mati","x","Seafood","","","Y","N","","Only went once so I'm open"],
 ["Greek on Wheels","x","","","","Y","N"],
 ["Shawarma Palace","x","","","","Y","N"]];
-const K="our-eats-v1",$=s=>document.querySelector(s);
+const K="restaurants-v1",$=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const orig=()=>D.map((r,i)=>({id:i+1,name:r[0],cats:r[1],type:r[2],loc:r[3],price:r[4],tried:r[5],go:r[6],known:r[7]||"",notes:r[8]||"",rating:0,web:"",img:""}));
 let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
