@@ -1,7 +1,9 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Our Eats</title>
+<title>Food Spots</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{--bg:#f6f1e7;--card:#fffdf9;--ink:#161616;--mute:#76705f;--line:#e3dac9;--soft:#efe8da;--g:#2e7d32;--y:#c99a00;--r:#c62828;--o:#e07a1f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151413;--card:#1f1d1a;--ink:#f3efe6;--mute:#a39b8a;--line:#35312b;--soft:#2a2722;--g:#6cc070;--y:#e6b928;--r:#ef6f6f;--o:#f09a4d}}
@@ -41,6 +43,8 @@ tr.gY td:first-child{box-shadow:inset 4px 0 0 var(--g)}tr.gM td:first-child{box-
 td a{color:var(--ink);margin-right:10px}
 .empty{text-align:center;color:var(--mute);padding:40px}
 .mp{width:100%;max-height:68vh}.pin circle{stroke:var(--card);stroke-width:2;cursor:pointer}.pin.gY circle{fill:var(--g)}.pin.gM circle{fill:var(--y)}.pin.gN circle{fill:var(--r)}.lb{fill:var(--mute);font-size:11px;text-anchor:middle}
+.hr{display:flex;gap:12px;align-items:center}.who{font-size:13px;color:var(--mute)}.who select{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px}#map{height:68vh;min-height:360px;border:1px solid var(--line);border-radius:10px}img.hero{width:calc(100% + 40px);object-fit:cover;display:block}img.pic{object-fit:cover}.emb{width:100%;height:280px;border:1px solid var(--line);border-radius:8px;margin-top:10px}
+header{flex-wrap:wrap}.nc{display:flex;gap:10px;align-items:center}.ph{width:76px;height:56px;border-radius:8px;background:var(--soft);display:grid;place-items:center;color:var(--mute);overflow:hidden;flex:none;font-size:20px}.ph img{width:100%;height:100%;object-fit:cover}td:first-child,th:first-child{min-width:270px}.in2{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px}
 dialog{border:0;border-radius:12px;background:var(--card);color:var(--ink);width:min(480px,94vw);max-height:90vh;padding:0}
 dialog::backdrop{background:rgba(0,0,0,.5)}
 .sp2{padding:20px}.hero{height:180px;margin:-20px -20px 14px;background:var(--soft) center/cover}
@@ -62,10 +66,10 @@ dialog input[type=text],dialog textarea{width:100%;border:1px solid var(--line);
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 </style></head><body>
 <div class="wrap">
-<header><h1>Our Eats</h1><button class="btn p" id="add">+ Add place</button></header>
+<header><h1>Food Spots</h1><div class="hr"><label class="who">Rating as <select id="who"></select></label><button class="btn p" id="add">+ Add place</button></div></header>
 <input class="search" id="q" type="search" placeholder="Search name, cuisine, area, notes…" aria-label="Search">
 <nav class="tabs" id="tabs"></nav>
-<div class="fb"><span id="cnt"></span><span class="sp"></span><button class="lk" id="vt">Map view</button><button class="lk" id="ftg">Filters</button><button class="lk" id="clr">Clear</button><button class="lk" id="rnd">Surprise me</button></div>
+<div class="fb"><span id="cnt"></span><span class="sp"></span><button class="lk" id="vt">Map view</button><button class="lk" id="ftg">Filters</button><button class="lk" id="clr">Clear</button><button class="lk" id="rnd">Surprise me</button><button class="lk" id="bk">Share &amp; backup</button></div>
 <div class="filters on" id="fl">
 <select id="fcu" aria-label="Cuisine"></select><select id="far" aria-label="Area"></select>
 <select id="fpr" aria-label="Price"><option value="">Any price</option><option value="1">$ (under ~$25)</option><option value="2">$$ (~$25–50)</option><option value="3">$$$ ($50+)</option></select>
@@ -73,19 +77,27 @@ dialog input[type=text],dialog textarea{width:100%;border:1px solid var(--line);
 <select id="fg" aria-label="Would go"><option value="">Would go: any</option><option value="Y">Yes</option><option value="M">Maybe</option><option value="N">Not keen</option></select><select id="frf" aria-label="Distance from"></select><select id="fdm" aria-label="Within"><option value="">Any distance</option><option value="1">Within 1 km</option><option value="2">Within 2 km</option><option value="5">Within 5 km</option><option value="10">Within 10 km</option></select></div>
 <div class="lg"><span><i class="d G"></i>Would go</span><span><i class="d Y"></i>Maybe</span><span><i class="d R"></i>Not keen / avoid</span><span><i class="d O"></i>Not tried yet</span><span>★ average of everyone's ratings</span><span>Map pins use the same colours</span><span>Click a row for details and to rate</span></div>
 <div class="tw" id="tw"><table><thead><tr id="th"></tr></thead><tbody id="list"></tbody></table></div>
-<div class="tw" id="mw" style="display:none;padding:12px"></div>
+<div id="mw" style="display:none"><div id="map"></div><div class="nt" id="mapnote" style="margin-top:6px"></div></div>
 </div>
 <dialog id="sh"></dialog>
 <dialog id="ed"><div class="sp2"><h2 id="eh">Add place</h2>
 <label>Name<input type="text" id="fn"></label>
 <div class="g2"><label>Cuisine<input type="text" id="fy"></label><label>Area<input type="text" id="fa"></label></div>
 <div class="g2"><label>Price<input type="text" id="fp" placeholder="$$ or $20-40"></label><label>Website<input type="text" id="fw" placeholder="optional"></label></div>
+<label>Photo URL<input type="text" id="fim" placeholder="optional: link to an image"></label>
+<label>Street address (makes the map pin exact)<input type="text" id="fad"></label>
 <label>Show under</label><div class="cb" id="fc"></div>
 <label>Known for<input type="text" id="fk"></label>
 <label>Notes<textarea id="fno" rows="3"></textarea></label>
 <div class="btns"><button class="btn" id="ec">Cancel</button><button class="btn p" id="es">Save</button></div></div></dialog>
+<dialog id="bd"><div class="sp2"><h2>Share &amp; backup</h2>
+<div class="lbl">Live sharing (everyone sees the same places and ratings)</div>
+<p class="mute" style="margin:0 0 8px;font-size:13px">One-time setup by one person: 1) go to console.firebase.google.com and create a project, 2) Build &gt; Realtime Database &gt; Create database &gt; start in <b>test mode</b>, 3) paste its address below, press Connect, then Copy invite link and send it to the others. Anyone with the link can edit, so only share it with people you trust.</p>
+<input class="in2" id="sdb" placeholder="https://your-project-default-rtdb.firebaseio.com"><div class="btns" style="justify-content:flex-start"><button class="btn" id="scn">Connect</button><button class="btn" id="sinv">Copy invite link</button></div><div class="nt" id="sst">Not connected</div>
+<div class="lbl">Manual backup</div><textarea id="bt" rows="5" class="in2"></textarea>
+<div class="btns"><button class="btn" id="bl">Restore pasted</button><button class="btn" id="bcp">Copy</button><button class="btn p" id="bc">Close</button></div></div></dialog>
 <script>
-const CATS={d:"Date night",c:"Chill",t:"Takeout",b:"Bars",k:"Brunch",f:"Cafés",x:"Avoid"};
+const CATS={d:"Date night",c:"Chill",t:"Takeout",b:"Bars",k:"Brunch",f:"Cafés",s:"Desserts",x:"Avoid"};
 // name, lists, type, area, price, tried, go, known for, notes
 const D=[
 ["Amicci","dct","Greek / Pizza","Gatineau","","Y","Y","Huge Greek platters, low price; pizzas","BEST; my family ❤️"],
@@ -107,7 +119,7 @@ const D=[
 ["Riviera","d","Canadian","Centretown","$$$","N","Y"],
 ["Ruby's","d","Canadian","Byward","$$$","N","M","","Shareables and cute ambiance"],
 ["Rose Bowl","d","Steak & seafood","Little Italy & Preston","$$","Y","Y","Bruschetta, lobster ravioli, steak"],
-["Harmons","d","Steakhouse","Elgin (Centretown)","$$$","Y","Y","Key lime pie; great drinks","Food is good but way overpriced. Sister concept: Abby's Wine Bar"],
+["Harmons","ds","Steakhouse","Elgin (Centretown)","$$$","Y","Y","Key lime pie; great drinks","Food is good but way overpriced. Sister concept: Abby's Wine Bar"],
 ["Gitanes","d","French","Elgin (Centretown)","$$","N","Y"],
 ["Cocotte Bistro","d","French","Downtown (Metcalfe)","$30-80","N","Y"],
 ["Ratatouille Bistro","d","French","Byward","$20-40","N","M"],
@@ -173,15 +185,24 @@ const D=[
 ["Thr33's Co. Snack Bar","x","","","","Y","N","","Did not stand out, but only went once"],
 ["Mati","x","Seafood","","","Y","N","","Only went once so I'm open"],
 ["Greek on Wheels","x","","","","Y","N"],
-["Shawarma Palace","x","","","","Y","N"]];
-const K="our-eats-v1",KR="our-eats-rt",KI="our-eats-img",$=s=>document.querySelector(s);
+["Shawarma Palace","x","","","","Y","N"],
+["Stella Luna","s","Gelato","Old Ottawa South","$","Y","Y"],
+["Oh So Good","s","Cheesecake","Byward","$","Y","M","","Byward"]];
+const SYNC_URL="";
+const K="food-spots-v1",KR="food-spots-rt",KM="food-spots-me",$=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const GOL={Y:"Would go",M:"Maybe",N:"Not keen"};
 const orig=()=>D.map((r,i)=>({id:i+1,name:r[0],cats:r[1],type:r[2],loc:r[3],price:r[4],tried:r[5],go:r[6],known:r[7]||"",notes:r[8]||"",web:""}));
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
-let S=ld(K,null);if(!Array.isArray(S))S=orig();
-let imgs=ld(KI,{}),L=ld(KR,{}),ME="me",RT={me:L},NAMES={me:"You"},DB=null,pt=0,warned=0;
-S.forEach(p=>{p.web=p.web||"";if(p.img){imgs[p.id]=p.img;delete p.img}if(p.rating){L[p.id]=p.rating}delete p.rating});
+const OLDS=new Set(["Amicci", "Malak al Tawouk", "Aladdin", "Wa Hing Li Ho", "Pho Van Van", "Haru Haru", "Host India-East", "Nunna's Hot Chicken", "Umbrella Burger", "BBQ Shop", "Scores"]);
+const mig=l=>{let c=0;
+ l.forEach(p=>{if(OLDS.has(p.name)&&!p.ds&&p.cats.includes("s")){p.cats=p.cats.replace("s","");p.ds=1;c++}
+  if(p.name=="Harmons"&&!p.cats.includes("s")&&!p.dh){p.cats+="s";p.dh=1;c++}});
+ [["Stella Luna","s","Gelato","Old Ottawa South","$","Y","Y","",""],["Oh So Good","s","Cheesecake","Byward","$","Y","M","","Byward"]].forEach(r=>{if(!l.some(p=>p.name==r[0])){l.push({id:Math.max(0,...l.map(x=>x.id))+1,name:r[0],cats:r[1],type:r[2],loc:r[3],price:r[4],tried:r[5],go:r[6],known:r[7],notes:r[8],web:"",img:""});c++}});
+ return c};
+let S=ld(K,null);if(!Array.isArray(S))S=orig();mig(S);
+let RT=ld(KR,{}),ME=localStorage.getItem(KM)||"Me",pt=0,pushT=0;RT[ME]=RT[ME]||{};
+S.forEach(p=>{p.web=p.web||"";p.img=p.img||""});
 const CUIS=["Italian","Canadian","French","Contemporary","Japanese","Sushi","Ramen","Korean","Indian","Seafood","Pizza","BBQ","Steak","Mexican","Lebanese","Vietnamese","Greek","Café","Bar"];
 const AREAS=[["Centretown",/Centretown|Elgin|Bank|Somerset|Chinatown/],["Byward",/Byward|Rideau|Major Hill/],["Glebe",/Glebe/],["Westboro",/Westboro|Richmond/],["Hintonburg",/Hintonburg|Armstrong/],["Little Italy",/Little Italy|Preston/],["Wellington",/Wellington/],["Downtown",/Downtown|Metcalfe/],["Old Ottawa",/Old Ottawa/],["New Edinburgh",/New Edinburgh/],["Gatineau",/Gatineau|Aylmer|Hull/],["Chelsea",/Chelsea/]];
 const area=p=>(AREAS.find(a=>a[1].test(p.loc))||["Other"])[0];
@@ -189,39 +210,69 @@ const tier=p=>{const d=(p.price.match(/\$/g)||[]).length,n=(p.price.match(/\d+/g
 const AC={Centretown:[45.4175,-75.693],Byward:[45.4285,-75.6935],Glebe:[45.401,-75.686],Westboro:[45.395,-75.755],Hintonburg:[45.4025,-75.73],"Little Italy":[45.4045,-75.708],Wellington:[45.4,-75.74],Downtown:[45.422,-75.6985],"Old Ottawa":[45.392,-75.68],"New Edinburgh":[45.44,-75.693],Gatineau:[45.429,-75.72],Chelsea:[45.51,-75.78]};
 const hav=(a,b)=>{const t=x=>x*Math.PI/180,h=Math.sin(t(b[0]-a[0])/2)**2+Math.cos(t(a[0]))*Math.cos(t(b[0]))*Math.sin(t(b[1]-a[1])/2)**2;return 12742*Math.asin(Math.sqrt(h))};
 const refPt=()=>st.rf=="me"?geo:AC[st.rf]||null;
-const dist=p=>{const r=refPt(),c=AC[area(p)];return r&&c?hav(r,c):null};
+const dist=p=>{const r=refPt(),c=GEO[p.id]||AC[area(p)];return r&&c?hav(r,c):null};
 const dd=p=>{const d=dist(p);return d==null?1e9:d};
 const distTxt=p=>{const d=dist(p);return d==null?"":`<div class="nt">~${d<1?"<1":d.toFixed(1)} km</div>`};
-function mapSvg(r){
- const g={};r.forEach(p=>{const a=area(p);if(AC[a]&&a!="Chelsea")(g[a]=g[a]||[]).push(p)});
- const out=r.length-Object.values(g).reduce((n,l)=>n+l.length,0);let o="";
- for(const a in g){const [la,ln]=AC[a],x=30+(ln+75.77)*4900,y=30+(45.445-la)*7000,l=g[a];
-  o+=l.map((p,k)=>`<g class="pin g${p.go}" data-id="${p.id}"><circle cx="${(x+9*Math.sqrt(k)*Math.cos(k*2.4)).toFixed(1)}" cy="${(y+9*Math.sqrt(k)*Math.sin(k*2.4)).toFixed(1)}" r="7"></circle><title>${esc(p.name)}</title></g>`).join("")+`<text class="lb" x="${x.toFixed(1)}" y="${(y-9*Math.sqrt(l.length)-6).toFixed(1)}">${a} (${l.length})</text>`}
- return `<svg class="mp" viewBox="0 0 560 480" role="img" aria-label="Map of places by neighbourhood">${o||'<text class="lb" x="280" y="240">Nothing matches your filters</text>'}</svg><div class="nt">Pins sit at neighbourhood level, not exact addresses. Click a pin for details and the exact Maps link.${out?` ${out} place${out>1?"s":""} outside this view (e.g. Chelsea, or no area) not shown.`:""}</div>`}
-const TABS=[["all","All"],["d","Date night"],["c","Chill"],["t","Takeout"],["b","Bars"],["kf","Brunch & cafés"],["x","Avoid"]];
-let geo=null;const st={tab:"all",q:"",cu:"",ar:"",pr:"",t:"",g:"",s:"n",rf:"",dm:"",v:"t"};let cur=null,editId=null,shown=[];
+let MAP=null,LAY=null,GEO=ld("food-spots-geo",{}),GT=ld("food-spots-gt",{}),gbusy=0;
+const cv=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function drawMap(r,fit){
+ if(!window.L){$("#map").innerHTML='<div class="empty">The map library could not load. Check your internet connection.</div>';return}
+ if(!MAP){MAP=L.map("map").setView([45.41,-75.7],12);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(MAP);LAY=L.layerGroup().addTo(MAP)}
+ MAP.invalidateSize();LAY.clearLayers();const pts=[],k={};let ap=0;
+ r.forEach(p=>{let c=GEO[p.id];const ex=!!c;if(!c){const a=AC[area(p)],ar=area(p);if(!a)return;const n=k[ar]=(k[ar]||0)+1;c=[a[0]+.002*Math.sqrt(n)*Math.sin(n*2.4),a[1]+.003*Math.sqrt(n)*Math.cos(n*2.4)];ap++}
+  pts.push(c);L.circleMarker(c,{radius:9,color:"#fff",weight:2,fillColor:cv(p.cats.includes("x")?"--r":{Y:"--g",M:"--y",N:"--r"}[p.go]),fillOpacity:ex?.95:.5}).bindTooltip(p.name+(ex?"":" (approximate)")).bindPopup(`<b>${esc(p.name)}</b><br>${esc(p.type)}<br><a href="${mapUrl(p)}" target="_blank" rel="noopener">Open in Google Maps</a> · <a href="#" onclick="openSheet(${p.id});return false">Details</a>`).addTo(LAY)});
+ if(fit&&pts.length)MAP.fitBounds(pts,{padding:[30,30],maxZoom:14});
+ $("#mapnote").innerHTML=(ap?"Faded pins are approximate while exact spots are still being looked up. ":"")+'Click a pin for details or to open it in Google Maps. <a href="https://www.google.com/maps/search/restaurants/@45.41,-75.7,12z" target="_blank" rel="noopener">Open Ottawa–Gatineau in Google Maps</a>'}
+const WB=ld("food-spots-wb",{}),PH=ld("food-spots-ph",{}),PT=ld("food-spots-pt",{});
+const site=p=>p.web||WB[p.id]||"",pic=p=>p.img||PH[p.id]||"";
+const sv=()=>{try{localStorage.setItem("food-spots-geo",JSON.stringify(GEO));localStorage.setItem("food-spots-gt",JSON.stringify(GT));localStorage.setItem("food-spots-wb",JSON.stringify(WB));localStorage.setItem("food-spots-ph",JSON.stringify(PH));localStorage.setItem("food-spots-pt",JSON.stringify(PT))}catch(e){}};
+async function bgRun(){
+ if(gbusy)return;gbusy=1;const sl=ms=>new Promise(x=>setTimeout(x,ms)),redraw=()=>st.v=="m"?drawMap(shown,false):render();
+ try{
+  for(const p of S.slice().sort((a,b)=>shown.includes(b)-shown.includes(a))){
+   if(GEO[p.id]||GT[p.id])continue;
+   const q=p.addr?p.addr+", "+city(p):p.name+" "+city(p);
+   const j=await (await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&extratags=1&viewbox=-76.05,45.6,-75.45,45.28&bounded=1&q="+encodeURIComponent(q))).json();
+   if(j[0]){GEO[p.id]=[+j[0].lat,+j[0].lon];const x=j[0].extratags||{},w=x.website||x["contact:website"];if(w)WB[p.id]=w;if(x.image&&/^https?:/.test(x.image))PH[p.id]=x.image}
+   GT[p.id]=1;sv();redraw();await sl(1100)}
+  for(const p of S){if(pic(p)||PT[p.id]||!site(p))continue;
+   const r=await fetch("https://api.microlink.io/?url="+encodeURIComponent(webUrl(p)));if(r.status==429)break;
+   const j=await r.json();if(j.status!="success")break;
+   const u=j.data&&j.data.image&&j.data.image.url;if(u)PH[p.id]=u;PT[p.id]=1;sv();render();await sl(800)}
+ }catch(e){}
+ gbusy=0}
+const TABS=[["all","All"],["d","Date night"],["c","Chill"],["t","Takeout"],["b","Bars"],["kf","Brunch & cafés"],["s","Desserts"],["x","Avoid"]];
+let geo=null;const st={tab:"all",q:"",cu:"",ar:"",pr:"",t:"",g:"",s:"n",rf:"",dm:"",v:"t"};let cur=null,editId=null,shown=[],EMB=null;
 const inTab=(p,k)=>k=="all"?!p.cats.includes("x"):[...k].some(c=>p.cats.includes(c));
 const city=p=>/Gatineau|Aylmer|Hull/.test(p.loc)?"Gatineau QC":/Chelsea/.test(p.loc)?"Chelsea QC":"Ottawa ON";
-const mapUrl=p=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.name+" "+city(p));
-const webUrl=p=>p.web?(/^https?:/.test(p.web)?p.web:"https://"+p.web):"https://www.google.com/search?q="+encodeURIComponent(p.name+" "+city(p)+" restaurant");
+const mapUrl=p=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.name+" "+(p.addr||city(p)));
+const webUrl=p=>{const w=p.web||WB[p.id];return w?(/^https?:/.test(w)?w:"https://"+w):"https://www.google.com/search?q="+encodeURIComponent(p.name+" "+city(p)+" restaurant")};
 const photoUrl=p=>"https://www.google.com/search?tbm=isch&q="+encodeURIComponent(p.name+" "+city(p)+" restaurant food");
 const rts=id=>Object.values(RT).map(m=>m[id]).filter(Boolean);
 const avg=id=>{const r=rts(id);return r.length?r.reduce((a,b)=>a+b)/r.length:0};
-const fail=()=>{if(!warned++)alert("This change is only saved on this device. To save it for everyone, ask for Contributor access to this page.")};
-function persist(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}if(DB){clearTimeout(pt);pt=setTimeout(()=>{pt=0;DB.doc("app/places").set({list:S}).catch(fail)},400)}}
-function rate(id,v){const m=RT[ME]=RT[ME]||{};if(m[id]==v)delete m[id];else m[id]=v;try{localStorage.setItem(KR,JSON.stringify(m))}catch(e){}if(DB)DB.collection("ratings").doc(ME).set({r:m}).catch(fail)}
-const saveImg=()=>{try{localStorage.setItem(KI,JSON.stringify(imgs));return true}catch(e){alert("Storage is full. Remove a few photos.");return false}};
+function saveLocal(){try{localStorage.setItem(K,JSON.stringify(S));localStorage.setItem(KR,JSON.stringify(RT))}catch(e){alert("Browser storage is full. Remove some uploaded photos or use photo URLs instead.")}}
+const cleanName=n=>(n||"").trim().replace(/[.$#\[\]\/]/g,"_");
+const normDb=u=>{u=(u||"").trim().replace(/\.json$/,"").replace(/\/+$/,"");if(u&&!/^https?:/.test(u))u="https://"+u;return u};
+let SB=normDb(new URLSearchParams(location.search).get("db")||localStorage.getItem("food-spots-sync")||SYNC_URL),tm=0;
+if(SB){try{localStorage.setItem("food-spots-sync",SB);history.replaceState(null,"",location.pathname)}catch(e){}}
+const put=(path,d)=>fetch(SB+"/foodspots/"+path+".json",{method:"PUT",body:JSON.stringify(d)}).then(r=>{if(!r.ok)throw 0});
+const setStat=t=>{const e=$("#sst");if(e)e.textContent=t};
+const asObj=x=>Array.isArray(x)?Object.fromEntries(x.map((v,i)=>[i,v]).filter(a=>a[1])):(x||{});
+function push(what){if(!SB)return;pt=1;clearTimeout(pushT);pushT=setTimeout(async()=>{try{if(what!="r")await put("places",S);await put("ratings/"+ME,RT[ME]||{});setStat("Live · synced "+new Date().toLocaleTimeString())}catch(e){setStat("Offline: will retry on your next change")}pt=0},400)}
+function persist(){saveLocal();push("p")}
+function rate(id,v){const m=RT[ME]=RT[ME]||{};if(m[id]==v)delete m[id];else m[id]=v;saveLocal();push("r")}
 
 function row(p){
  const x=p.cats.includes("x"),n=rts(p.id).length;
- return `<tr class="g${p.go}" data-id="${p.id}"><td>${imgs[p.id]?`<span class="pic" style="background-image:url(${imgs[p.id]})"></span>`:""}<button class="nm" data-a="o">${esc(p.name)}</button></td><td>${esc(p.type)}</td><td>${esc(area(p))}${distTxt(p)}</td><td>${esc(p.price)}</td>
+ return `<tr class="g${p.go}" data-id="${p.id}"><td><div class="nc"><div class="ph">${pic(p)?`<img src="${esc(pic(p))}" alt="" loading="lazy" onerror="this.remove()">`:"＋"}</div><button class="nm" data-a="o">${esc(p.name)}</button></div></td><td>${esc(p.type)}</td><td>${esc(area(p))}${distTxt(p)}</td><td>${esc(p.price)}</td>
 <td class="wide">${esc(p.known)}${p.notes?`<div class="nt">${esc(p.notes)}</div>`:""}</td>
 <td><button class="pill ${x?"N":p.go}" data-a="go">${x?"Avoid":GOL[p.go]}</button><button class="pill ${p.tried=="Y"?"T":"U"}" data-a="t">${p.tried=="Y"?"✓ Tried":"Not yet"}</button></td>
 <td class="rt">${n?`<b>★ ${avg(p.id).toFixed(1)}</b> <span>(${n})</span>`:"–"}</td>
-<td><a href="${mapUrl(p)}" target="_blank" rel="noopener">Map</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${p.web?"Site":"Find site"}</a></td></tr>`}
+<td><a href="${mapUrl(p)}" target="_blank" rel="noopener">Map</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${site(p)?"Site":"Find site"}</a></td></tr>`}
 
 function opts(id,label,list,val){const e=$(id);e.innerHTML=`<option value="">${label}</option>`+list.map(([v,c])=>`<option value="${esc(v)}">${esc(v)} (${c})</option>`).join("");e.value=val}
-function render(){
+function whoUI(){$("#who").innerHTML=Object.keys(RT).map(n=>`<option${n==ME?" selected":""}>${esc(n)}</option>`).join("")+'<option value="+">+ Add person…</option>'}
+function render(){whoUI();
  const q=st.q.toLowerCase(),has=(p,c)=>p.type.toLowerCase().includes(c.toLowerCase());
  const base=S.filter(p=>(!q||[p.name,p.type,p.loc,p.price,p.known,p.notes].join(" ").toLowerCase().includes(q))&&(q||inTab(p,st.tab))&&(!q||st.tab=="all"||inTab(p,st.tab)));
  opts("#fcu","All cuisines",CUIS.map(c=>[c,base.filter(p=>has(p,c)).length]).filter(a=>a[1]),st.cu);
@@ -232,26 +283,27 @@ function render(){
  const r=base.filter(p=>(!st.cu||has(p,st.cu))&&(!st.ar||area(p)==st.ar)&&(!st.pr||tier(p)==st.pr)&&(!st.t||p.tried==st.t)&&(!st.g||p.go==st.g)&&(!st.dm||!refPt()||(dist(p)!=null&&dist(p)<=+st.dm)))
   .sort((a,b)=>st.s=="d"?(dd(a)-dd(b))||n(a,b):st.s=="r"?(avg(b.id)-avg(a.id))||n(a,b):st.s=="g"?(o[a.go]-o[b.go])||n(a,b):st.s=="y"?a.type.localeCompare(b.type)||n(a,b):st.s=="a"?area(a).localeCompare(area(b))||n(a,b):n(a,b));
  $("#list").innerHTML=r.length?r.map(row).join(""):`<tr><td colspan="8" class="empty">Nothing matches. Clear a filter or add a place.</td></tr>`;
- $("#tw").style.display=st.v=="t"?"":"none";$("#mw").style.display=st.v=="m"?"":"none";$("#vt").textContent=st.v=="t"?"Map view":"Table view";if(st.v=="m")$("#mw").innerHTML=mapSvg(r);
+ $("#tw").style.display=st.v=="t"?"":"none";$("#mw").style.display=st.v=="m"?"":"none";$("#vt").textContent=st.v=="t"?"Map view":"Table view";if(st.v=="m")drawMap(r,true);
  shown=r;$("#cnt").textContent=r.length+" place"+(r.length==1?"":"s");
 }
 function sheet(){
  const p=S.find(x=>x.id==cur);if(!p)return;
- const mine=(RT[ME]||{})[p.id]||0,im=imgs[p.id];
+ const mine=(RT[ME]||{})[p.id]||0,im=pic(p);
  const stars=[1,2,3,4,5].map(v=>`<button class="st${mine>=v?" on":""}" data-a="rate" data-v="${v}" aria-label="Rate ${v}">★</button>`).join("");
- const others=Object.keys(RT).filter(u=>u!=ME&&RT[u][p.id]).map(u=>`<div class="rr"><span>${esc(NAMES[u]||"Someone")}</span><span class="rs">${"★".repeat(RT[u][p.id])}${"☆".repeat(5-RT[u][p.id])}</span></div>`).join("");
+ const others=Object.keys(RT).filter(u=>u!=ME&&RT[u][p.id]).map(u=>`<div class="rr"><span>${esc(u)}</span><span class="rs">${"★".repeat(RT[u][p.id])}${"☆".repeat(5-RT[u][p.id])}</span></div>`).join("");
  const seg=(a,c,o)=>`<div class="seg">${o.map(([v,l])=>`<button class="${c==v?"on":""}" data-a="${a}" data-v="${v}">${l}</button>`).join("")}</div>`;
- $("#sh").innerHTML=`<div class="sp2">${im?`<div class="hero" style="background-image:url(${im})"></div>`:""}
+ $("#sh").innerHTML=`<div class="sp2">${im?`<img class="hero" src="${esc(im)}" alt="" onerror="this.remove()">`:""}
 <h2>${esc(p.name)}</h2><div class="sub">${[p.type,p.loc,p.price].filter(Boolean).map(esc).join(" · ")||"&nbsp;"}</div>
-<div class="lbl">Your rating</div><div>${stars}</div>${others?`<div class="lbl">Others</div>${others}`:""}
+<div class="lbl">Rating as ${esc(ME)}</div><div>${stars}</div>${others?`<div class="lbl">Others</div>${others}`:""}
 <div class="lbl">Tried it?</div>${seg("tried",p.tried,[["N","Not yet"],["Y","Tried"]])}
 <div class="lbl">Would go?</div>${seg("go",p.go,[["Y","Yes"],["M","Maybe"],["N","Not keen"]])}
 ${p.known?`<p class="txt">${esc(p.known)}</p>`:""}${p.notes?`<p class="txt mute">${esc(p.notes)}</p>`:""}
-<div class="links"><a href="${mapUrl(p)}" target="_blank" rel="noopener">Open in Maps</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${p.web?"Website":"Find website"}</a><a href="${photoUrl(p)}" target="_blank" rel="noopener">Find photos</a></div>
+<div class="links"><a href="${mapUrl(p)}" target="_blank" rel="noopener">Open in Maps</a><a href="${esc(webUrl(p))}" target="_blank" rel="noopener">${site(p)?"Website":"Find website"}</a><a href="${photoUrl(p)}" target="_blank" rel="noopener">Find photos</a></div>
+<div class="links" style="margin-top:8px"><button class="btn" data-a="emb" style="flex:1">${EMB==p.id?"Hide":"Show"} Google Maps card (photos &amp; reviews)</button>${site(p)?`<button class="btn" data-a="og" style="flex:1">Get photo from website</button>`:""}</div>${EMB==p.id?`<iframe class="emb" src="https://www.google.com/maps?q=${encodeURIComponent(p.name+" "+city(p))}&output=embed" loading="lazy"></iframe>`:""}
 ${im?"":`<div class="nt" style="margin-top:10px">Tip: open Find photos or Maps, copy an image, then paste it here (Ctrl/Cmd+V) or drop an image file onto this card.</div>`}<div class="foot"><span><label class="lk" style="display:inline;margin:0">${im?"Change photo":"Add photo"}<input type="file" accept="image/*" hidden id="ph"></label>${im?` &nbsp;<button data-a="rmph">Remove</button>`:""}</span>
 <span><button data-a="edit">Edit</button> &nbsp; <button data-a="del">Delete</button> &nbsp; <button data-a="close" style="color:var(--ink);font-weight:600">Done</button></span></div></div>`;
 }
-const openSheet=id=>{cur=id;sheet();$("#sh").showModal()};
+const openSheet=id=>{cur=id;EMB=null;sheet();$("#sh").showModal()};
 function resize(f,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",.6))};im.src=r.result};r.readAsDataURL(f)}
 
 $("#list").onclick=e=>{
@@ -267,7 +319,6 @@ $("#q").oninput=e=>{st.q=e.target.value;render()};
 $("#ftg").onclick=()=>$("#fl").classList.toggle("on");
 $("#clr").onclick=()=>{Object.assign(st,{q:"",cu:"",ar:"",pr:"",t:"",g:"",rf:"",dm:"",s:"n"});$("#q").value="";["#fpr","#ft","#fg","#frf","#fdm"].forEach(i=>$(i).value="");render()};
 $("#vt").onclick=()=>{st.v=st.v=="t"?"m":"t";render()};
-$("#mw").onclick=e=>{const g=e.target.closest("[data-id]");if(g)openSheet(+g.dataset.id)};
 $("#frf").innerHTML='<option value="">Distance from…</option>'+Object.keys(AC).map(a=>`<option>${a}</option>`).join("")+'<option value="me">My location</option>';
 $("#frf").onchange=e=>{const v=e.target.value;if(v=="me"){if(!navigator.geolocation){alert("Location isn't available here. Pick a neighbourhood instead.");e.target.value=st.rf;return}navigator.geolocation.getCurrentPosition(q=>{geo=[q.coords.latitude,q.coords.longitude];st.rf="me";st.s="d";render()},()=>{alert("Couldn't get your location. Pick a neighbourhood instead.");e.target.value=st.rf})}else{st.rf=v;st.s=v?"d":"n";if(!v)st.dm="";$("#fdm").value=st.dm;render()}};
 $("#fdm").onchange=e=>{if(e.target.value&&!st.rf){alert("Choose \"Distance from…\" first.");e.target.value="";return}st.dm=e.target.value;render()};
@@ -278,21 +329,22 @@ $("#sh").onclick=e=>{
  const p=S.find(x=>x.id==cur),a=b.dataset.a,v=b.dataset.v;
  if(a=="close")return $("#sh").close();
  if(a=="edit"){$("#sh").close();return openEd(cur)}
- if(a=="del"){if(!confirm(`Delete "${p.name}"?`))return;S=S.filter(x=>x.id!=cur);delete imgs[cur];if(DB)DB.doc("photos/"+cur).delete().catch(()=>{});else saveImg();persist();$("#sh").close();return render()}
+ if(a=="del"){if(!confirm(`Delete "${p.name}"?`))return;S=S.filter(x=>x.id!=cur);persist();$("#sh").close();return render()}
  if(a=="rate")rate(cur,+v);
  if(a=="tried"){p.tried=v;persist()}if(a=="go"){p.go=v;persist()}
- if(a=="rmph"){delete imgs[cur];if(DB)DB.doc("photos/"+cur).delete().catch(fail);else saveImg()}
+ if(a=="rmph"){p.img="";PH[p.id]="";PT[p.id]=1;sv();persist()}if(a=="emb")EMB=EMB==cur?null:cur;if(a=="og")return ogPhoto(p);
  sheet();render();
 };
-$("#sh").onchange=e=>{if(e.target.id!="ph"||!e.target.files[0])return;resize(e.target.files[0],d=>{const id=cur;imgs[id]=d;if(DB)DB.doc("photos/"+id).set({d}).catch(fail);else saveImg();sheet();render()})};
-const addImg=f=>{if(f&&cur!=null&&/^image\//.test(f.type))resize(f,d=>{const id=cur;imgs[id]=d;if(DB)DB.doc("photos/"+id).set({d}).catch(fail);else saveImg();sheet();render()})};
+$("#sh").onchange=e=>{if(e.target.id=="ph")addImg(e.target.files[0])};
+const addImg=f=>{if(f&&cur!=null&&/^image\//.test(f.type))resize(f,d=>{const p=S.find(x=>x.id==cur);if(p){p.img=d;persist();sheet();render()}})};
+async function ogPhoto(p){try{const j=await (await fetch("https://api.microlink.io/?url="+encodeURIComponent(webUrl(p)))).json();const u=j.data&&j.data.image&&j.data.image.url;if(!u)throw 0;p.img=u;persist();sheet();render()}catch(e){alert("Couldn't find a photo on that website. Paste an image address into Edit > Photo URL instead.")}}
 $("#sh").addEventListener("paste",e=>{const i=[...((e.clipboardData&&e.clipboardData.items)||[])].find(x=>x.type.startsWith("image/"));if(i){e.preventDefault();addImg(i.getAsFile())}});
 $("#sh").addEventListener("dragover",e=>e.preventDefault());
 $("#sh").addEventListener("drop",e=>{e.preventDefault();addImg(e.dataTransfer.files[0])});
 function openEd(id){
  editId=id;const p=id?S.find(x=>x.id==id):{name:"",cats:/^[a-z]$/.test(st.tab)?st.tab:"d",type:"",loc:"",price:"",web:"",known:"",notes:""};
  $("#eh").textContent=id?"Edit place":"Add place";
- $("#fn").value=p.name;$("#fy").value=p.type;$("#fa").value=p.loc;$("#fp").value=p.price;$("#fw").value=p.web;$("#fk").value=p.known;$("#fno").value=p.notes;
+ $("#fn").value=p.name;$("#fy").value=p.type;$("#fa").value=p.loc;$("#fp").value=p.price;$("#fw").value=p.web;$("#fad").value=p.addr||"";$("#fim").value=(p.img&&!p.img.startsWith("data:"))?p.img:"";$("#fk").value=p.known;$("#fno").value=p.notes;
  $("#fc").innerHTML=Object.entries(CATS).map(([k,l])=>`<label><input type="checkbox" value="${k}"${p.cats.includes(k)?" checked":""}>${l}</label>`).join("");
  $("#ed").showModal();
 }
@@ -301,25 +353,26 @@ $("#ec").onclick=()=>$("#ed").close();
 $("#es").onclick=()=>{
  const name=$("#fn").value.trim();if(!name){$("#fn").focus();return}
  const cats=[...document.querySelectorAll("#fc input:checked")].map(i=>i.value).join("")||"d";
- const v={name,cats,type:$("#fy").value.trim(),loc:$("#fa").value.trim(),price:$("#fp").value.trim(),web:$("#fw").value.trim(),known:$("#fk").value.trim(),notes:$("#fno").value.trim()};
+ const v={name,cats,type:$("#fy").value.trim(),loc:$("#fa").value.trim(),price:$("#fp").value.trim(),web:$("#fw").value.trim(),known:$("#fk").value.trim(),addr:$("#fad").value.trim(),notes:$("#fno").value.trim()};{const im=$("#fim").value.trim();if(im)v.img=im}
  let id=editId;
- if(id)Object.assign(S.find(x=>x.id==id),v);else{id=Math.max(0,...S.map(x=>x.id))+1;S.push({id,tried:"N",go:"Y",...v})}
- persist();$("#ed").close();render();openSheet(id);
+ if(id){const o=S.find(x=>x.id==id);if((o.addr||"")!=v.addr||o.name!=v.name){delete GEO[id];delete GT[id]}Object.assign(o,v)}else{id=Math.max(0,...S.map(x=>x.id))+1;S.push({id,tried:"N",go:"Y",img:"",...v})}
+ persist();$("#ed").close();render();openSheet(id);bgRun();
 };
+$("#who").onchange=e=>{let v=e.target.value;if(v=="+"){v=(prompt("Name of the person rating:")||"").trim();if(!v){whoUI();return}}v=cleanName(v);if(!v){whoUI();return}RT[v]=RT[v]||{};ME=v;localStorage.setItem(KM,ME);persist();render();if($("#sh").open)sheet()};
+$("#bk").onclick=()=>{$("#sdb").value=SB;$("#bt").value=JSON.stringify({places:S,ratings:RT});$("#bd").showModal()};
+$("#bc").onclick=()=>$("#bd").close();
+$("#bcp").onclick=()=>{$("#bt").select();try{navigator.clipboard.writeText($("#bt").value)}catch(e){document.execCommand("copy")}};
+$("#bl").onclick=()=>{try{const d=JSON.parse($("#bt").value);if(!Array.isArray(d.places)||!d.places.every(x=>x&&x.name&&typeof x.cats=="string"))throw 0;S=d.places;for(const n in d.ratings||{})RT[n]={...RT[n],...d.ratings[n]};persist();render();$("#bd").close()}catch(e){alert("That doesn't look like a backup. Copy the full text from the box and try again.")}};
 render();
-// Shared mode: places + per-person ratings sync when the page runs with db + user access
-(async()=>{try{
- const c=window.claude;if(!c)return;
- const [d,u]=await Promise.all([c.use("db"),c.use("user")]);if(!d||!u)return;
- const id=await u.id();if(!id)return;
- ME=id;DB=d;NAMES[ME]="You";
- d.doc("app/places").onSnapshot(s=>{if(s.exists){if(!pt)S=(s.data().list||S)}else d.doc("app/places").set({list:S}).catch(()=>{});render();if($("#sh").open)sheet()},()=>{});
- d.collection("ratings").onSnapshot(async s=>{
-  const R={};s.docs.forEach(x=>R[x.id]=(x.data()||{}).r||{});
-  if(!R[ME]&&Object.keys(L).length){R[ME]=L;d.collection("ratings").doc(ME).set({r:L}).catch(()=>{})}
-  RT=R;render();if($("#sh").open)sheet();
-  try{const ps=await u.profiles(Object.keys(R));for(const k in ps)NAMES[k]=ps[k].isMe?"You":(ps[k].name||"Someone");render();if($("#sh").open)sheet()}catch(e){}
- },()=>{});
-d.collection("photos").onSnapshot(s=>{const m={};s.docs.forEach(x=>{const v=(x.data()||{}).d;if(v)m[x.id]=v});imgs=m;render();if($("#sh").open)sheet()},()=>{});
-}catch(e){}})();
+async function pull(){if(!SB||pt)return;try{const r=await fetch(SB+"/foodspots.json");if(!r.ok)throw 0;const d=await r.json();
+ if(d&&d.places){S=Array.isArray(d.places)?d.places.filter(Boolean):Object.values(d.places);const m=mig(S);
+  for(const n in d.ratings||{})if(n!=ME)RT[n]=asObj(d.ratings[n]);
+  if(d.ratings&&d.ratings[ME]&&!Object.keys(RT[ME]||{}).length)RT[ME]=asObj(d.ratings[ME]);
+  saveLocal();render();if($("#sh").open)sheet();if(m)push("p");setStat("Live · synced "+new Date().toLocaleTimeString())}
+ else{await put("places",S);await put("ratings/"+ME,RT[ME]||{});setStat("Live · your list is now shared")}}catch(e){setStat("Can't reach the live database. Check the address and that it is in test mode.")}}
+const startSync=()=>{clearInterval(tm);if(SB){pull();tm=setInterval(pull,10000)}};
+$("#scn").onclick=()=>{const u=normDb($("#sdb").value);if(!/^https:\/\/.+/.test(u)){alert("Paste the Realtime Database address, like https://your-project-default-rtdb.firebaseio.com");return}SB=u;try{localStorage.setItem("food-spots-sync",SB)}catch(e){}pt=0;setStat("Connecting…");startSync()};
+$("#sinv").onclick=()=>{if(!SB){alert("Connect first.");return}const l=location.origin+location.pathname+"?db="+encodeURIComponent(SB);try{navigator.clipboard.writeText(l)}catch(e){}prompt("Send this invite link (it connects them to the same shared list):",l)};
+if(!localStorage.getItem(KM)){const n=cleanName(prompt("What's your name? It labels your ratings (you can change it later)."))||"Me";if(n!="Me"&&!Object.keys(RT.Me||{}).length)delete RT.Me;ME=n;RT[n]=RT[n]||{};localStorage.setItem(KM,n);saveLocal();whoUI()}
+startSync();setTimeout(bgRun,1500);
 </script></body></html>
